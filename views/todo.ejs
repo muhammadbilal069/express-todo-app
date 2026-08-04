@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>TODO APP</h1>
+
+    <form action="/todo/add" method="POST">
+
+        <input
+            type="text"
+            name="data"
+            placeholder="Enter Todo..."
+            required
+        >
+
+        <button type="submit">
+            Add Todo
+        </button>
+
+    </form>
+
+    <ul>
+
+    <% for(let i = 0; i < todos.length; i++) { %>
+
+        <li>
+
+            <input
+                type="checkbox"
+                id="<%= todos[i].id %>"
+                <%= todos[i].status ? "checked" : "" %>
+                onchange="updateStatus(this)"
+            >
+
+            <span class="<%= todos[i].status ? 'done' : '' %>">
+                <%= todos[i].name %>
+            </span>
+
+        </li>
+
+    <% } %>
+
+    </ul>
+
+</div>
+
+<script>
+
+function updateStatus(element){
+
+    const id = Number(element.id);
+    const status = element.checked;
+
+    fetch("/todo/status",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            id:id,
+            status:status
+        })
+    })
+    .then(res=>res.text())
+    .then(data=>{
+        console.log(data);
+        location.reload();
+    });
+
+}
+
+</script>
+
+</body>
+</html>
